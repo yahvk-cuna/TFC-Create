@@ -1,6 +1,7 @@
 package moe.yahvk.tfc_create;
 
 import com.mojang.logging.LogUtils;
+import moe.yahvk.tfc_create.create.ItemAttribute;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
@@ -53,6 +54,7 @@ public class TFCCreate {
 //
 //        // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
 //        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ItemAttribute.init();
     }
 
 //    private void commonSetup(final FMLCommonSetupEvent event) {

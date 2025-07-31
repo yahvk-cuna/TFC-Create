@@ -1,0 +1,18 @@
+{
+  "create.item_attributes.tfc_create.eatable": "有营养值",
+  "create.item_attributes.tfc_create.eatable.inverted": "没有营养值",
+  "create.item_attributes.tfc_create.rotten": "已腐烂",
+  "create.item_attributes.tfc_create.rotten.inverted": "未腐烂",
+  "create.item_attributes.tfc_create.sluiceable": "可洗矿",
+  "create.item_attributes.tfc_create.sluiceable.inverted": "不可洗矿",
+  "create.item_attributes.tfc_create.heatable": "可加热",
+  "create.item_attributes.tfc_create.heatable.inverted": "不可加热",
+  "create.item_attributes.tfc_create.hot": "热的",
+  "create.item_attributes.tfc_create.hot.inverted": "冷的",
+  "create.item_attributes.tfc_create.can_work": "温度足以加工",
+  "create.item_attributes.tfc_create.can_work.inverted": "温度不足以加工",
+  "create.item_attributes.tfc_create.can_weld": "温度足以焊接",
+  "create.item_attributes.tfc_create.can_weld.inverted": "温度不足以焊接",
+  "create.item_attributes.tfc_create.fertilized": "已受精",
+  "create.item_attributes.tfc_create.fertilized.inverted": "未受精"
+}
