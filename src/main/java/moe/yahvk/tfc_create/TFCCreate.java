@@ -1,8 +1,12 @@
 package moe.yahvk.tfc_create;
 
 import com.mojang.logging.LogUtils;
+import moe.yahvk.tfc_create.config.Config;
 import moe.yahvk.tfc_create.create.ItemAttribute;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -33,8 +37,8 @@ public class TFCCreate {
 //        output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
 //    }).build());
 
-    public TFCCreate() {
-//        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public TFCCreate(FMLJavaModLoadingContext context) {
+        IEventBus modEventBus = context.getModEventBus();
 //
 //        // Register the commonSetup method for modloading
 //        modEventBus.addListener(this::commonSetup);
@@ -52,8 +56,13 @@ public class TFCCreate {
 //        // Register the item to a creative tab
 //        modEventBus.addListener(this::addCreative);
 //
-//        // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
-//        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
+        Config.registerConfigs(context);
+
+        modEventBus.addListener(TFCCreate::onRegister);
+    }
+
+    public static void onRegister(final RegisterEvent event) {
         ItemAttribute.init();
     }
 
