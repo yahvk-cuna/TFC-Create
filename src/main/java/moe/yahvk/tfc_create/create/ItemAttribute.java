@@ -8,7 +8,8 @@ import net.dries007.tfc.common.capabilities.egg.EggCapability;
 import net.dries007.tfc.common.capabilities.egg.IEgg;
 import net.dries007.tfc.common.capabilities.food.FoodCapability;
 import net.dries007.tfc.common.capabilities.heat.HeatCapability;
-import net.dries007.tfc.common.capabilities.heat.IHeat;
+import net.dries007.tfc.common.recipes.HeatingRecipe;
+import net.dries007.tfc.common.recipes.inventory.ItemStackInventory;
 import net.dries007.tfc.util.Sluiceable;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,17 @@ public class ItemAttribute {
             HOT = singleton("hot", HeatCapability::isHot),
             CAN_WORK = singleton("can_work", s -> s.getCapability(HeatCapability.CAPABILITY).map( h -> h.canWork() && h.getWorkingTemperature() != 0).orElse(false)),
             CAN_WELD = singleton("can_weld", s -> s.getCapability(HeatCapability.CAPABILITY).map(h -> h.canWeld() && h.getWeldingTemperature() != 0).orElse(false)),
+            DANGER = singleton("danger", ItemAttribute::dangerTemperature),
             FERTILIZED = singleton("fertilized", s -> s.getCapability(EggCapability.CAPABILITY).map(IEgg::isFertilized).orElse(false));
+
+    public static boolean dangerTemperature(ItemStack stack) {
+        return stack.getCapability(HeatCapability.CAPABILITY).map(heat -> {
+            float temperature = heat.getTemperature();
+            ItemStackInventory wrapper = new ItemStackInventory(stack);
+            HeatingRecipe recipe = HeatingRecipe.getRecipe(wrapper);
+            return recipe != null && (double) temperature > 0.9 * (double) recipe.getTemperature();
+        }).orElse(false);
+    }
 
     private static ItemAttributeType singleton(String id, Predicate<ItemStack> predicate) {
         return register(id, new SingletonItemAttribute.Type(type -> new SingletonItemAttribute(type, (stack, level) -> predicate.test(stack), "tfc_create." + id)));

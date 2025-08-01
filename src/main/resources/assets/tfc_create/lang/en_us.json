@@ -13,6 +13,8 @@
   "create.item_attributes.tfc_create.can_work.inverted": "is not hot enough to be worked",
   "create.item_attributes.tfc_create.can_weld": "is hot enough to be welded",
   "create.item_attributes.tfc_create.can_weld.inverted": "is not hot enough to be welded",
+  "create.item_attributes.tfc_create.danger": "has a danger temperature",
+  "create.item_attributes.tfc_create.danger.inverted": "do not have a danger temperature",
   "create.item_attributes.tfc_create.fertilized": "is fertilized",
   "create.item_attributes.tfc_create.fertilized.inverted": "is not fertilized"
 }

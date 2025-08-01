@@ -13,6 +13,8 @@
   "create.item_attributes.tfc_create.can_work.inverted": "温度不足以加工",
   "create.item_attributes.tfc_create.can_weld": "温度足以焊接",
   "create.item_attributes.tfc_create.can_weld.inverted": "温度不足以焊接",
+  "create.item_attributes.tfc_create.danger": "温度危险",
+  "create.item_attributes.tfc_create.danger.inverted": "温度不危险",
   "create.item_attributes.tfc_create.fertilized": "已受精",
   "create.item_attributes.tfc_create.fertilized.inverted": "未受精"
 }
