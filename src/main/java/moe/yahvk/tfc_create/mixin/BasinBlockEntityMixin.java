@@ -2,42 +2,31 @@ package moe.yahvk.tfc_create.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
 import moe.yahvk.tfc_create.config.ClientConfig;
 import moe.yahvk.tfc_create.config.CommonConfig;
-import moe.yahvk.tfc_create.config.Config;
 import moe.yahvk.tfc_create.create.HeatableContainerBehaviour;
 import net.createmod.catnip.lang.LangBuilder;
 import net.dries007.tfc.common.capabilities.heat.HeatCapability;
-import net.dries007.tfc.common.recipes.HeatingRecipe;
-import net.dries007.tfc.common.recipes.inventory.ItemStackInventory;
 import net.dries007.tfc.config.TFCConfig;
-import net.dries007.tfc.config.TemperatureDisplayStyle;
 import net.minecraft.core.Direction;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import org.checkerframework.checker.units.qual.A;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.spongepowered.asm.mixin.injection.callback.LocalCapture.CAPTURE_FAILHARD;
-import static org.spongepowered.asm.mixin.injection.callback.LocalCapture.PRINT;
 
 @Mixin(value = BasinBlockEntity.class, remap = false)
 public class BasinBlockEntityMixin {
@@ -51,6 +40,20 @@ public class BasinBlockEntityMixin {
         }
         this.tfccreate$heatableContainerBehaviour = new HeatableContainerBehaviour((BasinBlockEntity) (Object) this);
         behaviours.add(this.tfccreate$heatableContainerBehaviour);
+    }
+
+    @ModifyArg(method = "addBehaviours",
+            at = @At(value = "INVOKE", target = "Lcom/simibubi/create/foundation/blockEntity/behaviour/fluid/SmartFluidTankBehaviour;<init>(Lcom/simibubi/create/foundation/blockEntity/behaviour/BehaviourType;Lcom/simibubi/create/foundation/blockEntity/SmartBlockEntity;IIZ)V"),
+            index = 2)
+    public int changeTankNumber(BehaviourType<SmartFluidTankBehaviour> type, SmartBlockEntity be, int tanks,
+                                int tankCapacity, boolean enforceVariety) {
+        if (type == SmartFluidTankBehaviour.INPUT) {
+            return CommonConfig.basinInputTanks.get();
+        } else if (type == SmartFluidTankBehaviour.OUTPUT) {
+            return CommonConfig.basinOutputTanks.get();
+        } else {
+            return tanks;
+        }
     }
 
     @Inject(method = "getCapability", at = @At("HEAD"), cancellable = true)

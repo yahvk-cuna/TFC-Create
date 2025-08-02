@@ -6,7 +6,9 @@
   "refmap": "tfc_create.refmap.json",
   "mixins": [
     "BasinBlockEntityMixin",
+    "BasinRecipeMixin",
     "FanProcessingMixin",
+    "MechanicalMixerBlockEntityMixin",
     "accessor.BasinBlockEntityAccessor"
   ],
   "client": [
