@@ -43,7 +43,7 @@ public class CommonConfig {
                 .comment("The number of output tanks in the basin. Vanilla Create is 2.\n" +
                         "Note: melting recipes will put fluid in output tanks, so if you will melting and mixing in the same basin, " +
                         "you need to set this to the max ingredient number plus 1 of alloy recipes.")
-                .defineInRange("basinInputTanks", 4, 2, 20);
+                .defineInRange("basinOutputTanks", 4, 2, 20);
 
         builder.pop().push("mixer");
 
