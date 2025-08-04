@@ -7,6 +7,7 @@
   "mixins": [
     "BasinBlockEntityMixin",
     "BasinRecipeMixin",
+    "BlazeBurnerBlockEntityMixin",
     "CharcoalForgeBlockMixin",
     "CrucibleBlockMixin",
     "FanProcessingMixin",

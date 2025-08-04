@@ -12,6 +12,14 @@ public class CommonConfig {
     public static ForgeConfigSpec.BooleanValue alloyingByMixer;
     public static ForgeConfigSpec.BooleanValue alloyingRequireHot;
 
+    public static ForgeConfigSpec.IntValue temperatureToHeated;
+    public static ForgeConfigSpec.IntValue temperatureToSuperHeated;
+    public static ForgeConfigSpec.IntValue smoulderingTemperature;
+    public static ForgeConfigSpec.IntValue fadingTemperature;
+    public static ForgeConfigSpec.IntValue kindledTemperature;
+    public static ForgeConfigSpec.IntValue seethingTemperature;
+    public static ForgeConfigSpec.BooleanValue temperatureOnly;
+
     CommonConfig(final ForgeConfigSpec.Builder builder) {
         builder.push("basin");
 
@@ -47,6 +55,34 @@ public class CommonConfig {
                 .comment("Whether to require the basin to be hot for alloying.")
                 .define("alloyingRequireHot", true);
 
-        builder.pop();
+        builder.pop().push("blazeBurner");
+
+        temperatureToHeated = builder
+                .comment("At what temperature will the basin be considered in a Heated state for processing recipe?")
+                .defineInRange("temperatureToHeated", 1000, 0, Integer.MAX_VALUE);
+
+        temperatureToSuperHeated = builder
+                .comment("At what temperature will the basin be considered in a Super-Heated state for processing recipe?")
+                .defineInRange("temperatureToSuperHeated", 3000, 0, Integer.MAX_VALUE);
+
+        smoulderingTemperature = builder
+                .comment("The temperature of the smouldering blaze burner.")
+                .defineInRange("smoulderingTemperature", 0, 0, Integer.MAX_VALUE);
+
+        fadingTemperature = builder
+                .comment("The temperature of the fading blaze burner.")
+                .defineInRange("fadingTemperature", 1300, 0, Integer.MAX_VALUE);
+
+        kindledTemperature = builder
+                .comment("The temperature of the kindled blaze burner.")
+                .defineInRange("kindledTemperature", 1600, 0, Integer.MAX_VALUE);
+
+        seethingTemperature = builder
+                .comment("The temperature of the seething blaze burner.")
+                .defineInRange("seethingTemperature", 3000, 0, Integer.MAX_VALUE);
+
+        temperatureOnly = builder
+                .comment("Whether to only use temperature for the basin recipe. If false, it will also check the blaze burner heat level.")
+                .define("temperatureOnly", false);
     }
 }
