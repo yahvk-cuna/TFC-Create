@@ -15,7 +15,6 @@ import net.dries007.tfc.common.capabilities.heat.IHeatBlock;
 import net.dries007.tfc.common.recipes.HeatingRecipe;
 import net.dries007.tfc.common.recipes.inventory.ItemStackInventory;
 import net.dries007.tfc.util.calendar.Calendars;
-import net.dries007.tfc.util.calendar.ICalendarTickable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -26,10 +25,12 @@ import java.util.List;
 
 public class HeatableContainerBehaviour extends BlockEntityBehaviour implements IHeatBlock {
     public static final BehaviourType<FluidFillingBehaviour> TYPE = new BehaviourType<>();
+    private static final int TEMPERATURE_STABILITY_TICKS = 5;
+    private int temperatureStabilityTicks;
 
     private float temperature;
     private HeatingRecipe[] cachedRecipes;
-
+    private long lastCalendarUpdateTick;
 
     public HeatableContainerBehaviour(BasinBlockEntity be) {
         super(be);
@@ -64,14 +65,14 @@ public class HeatableContainerBehaviour extends BlockEntityBehaviour implements 
 
         checkForCalendarUpdate();
 
-        if (temperature > 0)
-        {
-            // Crucible target temperature decays constantly, since it is set externally. As long as we don't consider ourselves 'stable' (received a external setTemperature() call within the last 5 ticks.
+        if (temperatureStabilityTicks > 0) {
+            temperatureStabilityTicks--;
+        }
+        if (temperature > 0 && temperatureStabilityTicks == 0) {
             temperature = HeatCapability.adjustTempTowards(temperature, 0);
         }
 
-        if (!(blockEntity instanceof BasinBlockEntity basin))
-        {
+        if (!(blockEntity instanceof BasinBlockEntity basin)) {
             return;
         }
         SmartInventory inputs = basin.getInputInventory();
@@ -82,8 +83,7 @@ public class HeatableContainerBehaviour extends BlockEntityBehaviour implements 
                 continue;
 
             final @Nullable IHeat inputHeat = HeatCapability.get(inputStack);
-            if (inputHeat != null)
-            {
+            if (inputHeat != null) {
                 if (CommonConfig.heatItem.get()) {
                     HeatCapability.addTemp(inputHeat, temperature, 2 + temperature * 0.0025f);
                 }
@@ -96,8 +96,7 @@ public class HeatableContainerBehaviour extends BlockEntityBehaviour implements 
                     cachedRecipes[slot] = HeatingRecipe.getRecipe(inputStack);
                 }
                 final HeatingRecipe recipe = cachedRecipes[slot];
-                if (recipe != null && recipe.isValidTemperature(inputHeat.getTemperature()))
-                {
+                if (recipe != null && recipe.isValidTemperature(inputHeat.getTemperature())) {
                     // Convert input
                     final ItemStackInventory inventory = new ItemStackInventory(inputStack);
                     ItemStack outputItem = recipe.assemble(inventory, getWorld().registryAccess());
@@ -129,22 +128,40 @@ public class HeatableContainerBehaviour extends BlockEntityBehaviour implements 
     @Override
     public void setTemperature(float t) {
         temperature = t;
+        temperatureStabilityTicks = TEMPERATURE_STABILITY_TICKS;
         blockEntity.notifyUpdate();
+    }
+
+    @Override
+    public void setTemperatureIfWarmer(float t) {
+        if (t >= temperature) {
+            temperature = t;
+            temperatureStabilityTicks = TEMPERATURE_STABILITY_TICKS;
+            blockEntity.notifyUpdate();
+        }
     }
 
     @Override
     public void read(CompoundTag nbt, boolean clientPacket) {
         temperature = nbt.getFloat("temperature");
+        temperatureStabilityTicks = nbt.getInt("temperatureStabilityTicks");
+        if (temperatureStabilityTicks < 0) {
+            temperatureStabilityTicks = 0;
+        }
+        lastCalendarUpdateTick = nbt.getLong("lastCalendarUpdateTick");
+        if (lastCalendarUpdateTick <= 0) {
+            lastCalendarUpdateTick = Calendars.get().getTicks();
+        }
         super.read(nbt, clientPacket);
     }
 
     @Override
     public void write(CompoundTag nbt, boolean clientPacket) {
         nbt.putFloat("temperature", temperature);
+        nbt.putInt("temperatureStabilityTicks", temperatureStabilityTicks);
+        nbt.putLong("lastCalendarUpdateTick", lastCalendarUpdateTick);
         super.write(nbt, clientPacket);
     }
-
-    private long lastCalendarUpdateTick;
 
     public void onCalendarUpdate(long ticks) {
         temperature = HeatCapability.adjustTempTowards(temperature, 0, ticks);
@@ -166,13 +183,11 @@ public class HeatableContainerBehaviour extends BlockEntityBehaviour implements 
 
     }
 
-    public long getLastCalendarUpdateTick()
-    {
+    public long getLastCalendarUpdateTick() {
         return lastCalendarUpdateTick;
     }
 
-    public void setLastCalendarUpdateTick(long tick)
-    {
+    public void setLastCalendarUpdateTick(long tick) {
         lastCalendarUpdateTick = tick;
     }
 }
