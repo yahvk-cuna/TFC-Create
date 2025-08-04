@@ -16,7 +16,7 @@ public class CommonConfig {
         builder.push("basin");
 
         basinHeatable = builder
-                .comment("Whether the basin can be heated. If this is false, all other heat-related recipe will not work.")
+                .comment("Whether the basin can be heated. If this is false, all other heat-related features will not work.")
                 .define("basinHeatable", true);
 
         heatItem = builder
@@ -24,22 +24,20 @@ public class CommonConfig {
                 .define("heatItem", true);
 
         heatRecipeInBasin = builder
-                .comment("Whether the basin can process heat recipes like a crucible (eg. melting metal).")
+                .comment("Whether the basin can process heat recipes like a charcoal forge or crucible (eg. melting metal).")
                 .define("heatRecipeInBasin", true);
 
         basinInputTanks = builder
                 .comment("The number of input tanks in the basin. Vanilla Create is 2.")
-                .defineInRange("basinInputTanks", 4, 2, 8);
+                .defineInRange("basinInputTanks", 4, 2, 20);
 
         basinOutputTanks = builder
                 .comment("The number of output tanks in the basin. Vanilla Create is 2.\n" +
                         "Note: melting recipes will put fluid in output tanks, so if you will melting and mixing in the same basin, " +
                         "you need to set this to the max ingredient number plus 1 of alloy recipes.")
-                .defineInRange("basinInputTanks", 4, 2, 8);
+                .defineInRange("basinInputTanks", 4, 2, 20);
 
-        builder.pop();
-
-        builder.push("alloying");
+        builder.pop().push("mixer");
 
         alloyingByMixer = builder
                 .comment("Whether to allow alloying by mechanical mixer.")
