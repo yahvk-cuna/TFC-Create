@@ -2,7 +2,9 @@ package moe.yahvk.tfc_create;
 
 import com.mojang.logging.LogUtils;
 import moe.yahvk.tfc_create.config.Config;
+import moe.yahvk.tfc_create.create.ArmInteractionPointTypes;
 import moe.yahvk.tfc_create.create.ItemAttribute;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -63,7 +65,12 @@ public class TFCCreate {
     }
 
     public static void onRegister(final RegisterEvent event) {
+        ArmInteractionPointTypes.init();
         ItemAttribute.init();
+    }
+
+    public static ResourceLocation asResource(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
 //    private void commonSetup(final FMLCommonSetupEvent event) {
