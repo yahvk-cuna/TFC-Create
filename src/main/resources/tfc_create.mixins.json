@@ -11,8 +11,10 @@
     "CharcoalForgeBlockMixin",
     "CrucibleBlockMixin",
     "FanProcessingMixin",
+    "GenericItemFillingMixin",
     "MechanicalMixerBlockEntityMixin",
-    "accessor.BasinBlockEntityAccessor"
+    "accessor.BasinBlockEntityAccessor",
+    "jei.SpoutCategoryMixin"
   ],
   "client": [
   ],
