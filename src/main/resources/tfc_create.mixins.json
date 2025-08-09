@@ -12,6 +12,7 @@
     "CrucibleBlockMixin",
     "FanProcessingMixin",
     "GenericItemFillingMixin",
+    "LiquidBlazeBurnerBlockEntityMixin",
     "MechanicalMixerBlockEntityMixin",
     "accessor.BasinBlockEntityAccessor",
     "jei.SpoutCategoryMixin"

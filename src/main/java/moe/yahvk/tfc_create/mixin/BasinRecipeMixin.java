@@ -48,9 +48,9 @@ public class BasinRecipeMixin {
             return true;
         }
         if (CommonConfig.temperatureOnly.get()) {
-            return instance.testBlazeBurner(level);
-        } else {
             return false;
+        } else {
+            return instance.testBlazeBurner(level);
         }
     }
 }
