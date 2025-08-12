@@ -9,12 +9,12 @@ import net.dries007.tfc.common.capabilities.egg.IEgg;
 import net.dries007.tfc.common.capabilities.food.FoodCapability;
 import net.dries007.tfc.common.capabilities.heat.HeatCapability;
 import net.dries007.tfc.common.recipes.HeatingRecipe;
-import net.dries007.tfc.common.recipes.inventory.ItemStackInventory;
 import net.dries007.tfc.util.Sluiceable;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class ItemAttribute {
@@ -22,6 +22,8 @@ public class ItemAttribute {
             EATABLE = singleton("eatable", FoodCapability::has),
             ROTTEN = singleton("rotten", FoodCapability::isRotten),
             SLUICEABLE = singleton("sluiceable", s -> Sluiceable.get(s) != null),
+            MELTABLE = singleton("meltable", s -> Optional.ofNullable(HeatingRecipe.getRecipe(s)).map(r -> !r.getDisplayOutputFluid().isEmpty()).orElse(false)),
+            CALCINABLE = singleton("calcinable", s -> Optional.ofNullable(HeatingRecipe.getRecipe(s)).map(r -> !r.getResultItem(null).isEmpty()).orElse(false)),
             HEATABLE = singleton("heatable", HeatCapability::has),
             HOT = singleton("hot", HeatCapability::isHot),
             CAN_WORK = singleton("can_work", s -> s.getCapability(HeatCapability.CAPABILITY).map( h -> h.canWork() && h.getWorkingTemperature() != 0).orElse(false)),
@@ -32,8 +34,7 @@ public class ItemAttribute {
     public static boolean dangerTemperature(ItemStack stack) {
         return stack.getCapability(HeatCapability.CAPABILITY).map(heat -> {
             float temperature = heat.getTemperature();
-            ItemStackInventory wrapper = new ItemStackInventory(stack);
-            HeatingRecipe recipe = HeatingRecipe.getRecipe(wrapper);
+            HeatingRecipe recipe = HeatingRecipe.getRecipe(stack);
             return recipe != null && (double) temperature > 0.9 * (double) recipe.getTemperature();
         }).orElse(false);
     }
