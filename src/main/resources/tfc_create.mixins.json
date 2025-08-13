@@ -7,6 +7,7 @@
   "mixins": [
     "BasinBlockEntityMixin",
     "BasinRecipeMixin",
+    "BlastingTypeMixin",
     "BlazeBurnerBlockEntityMixin",
     "CharcoalForgeBlockMixin",
     "CrucibleBlockMixin",
@@ -14,6 +15,8 @@
     "GenericItemFillingMixin",
     "LiquidBlazeBurnerBlockEntityMixin",
     "MechanicalMixerBlockEntityMixin",
+    "SmokingTypeMixin",
+    "TransportedItemStackMixin",
     "accessor.BasinBlockEntityAccessor",
     "jei.SpoutCategoryMixin"
   ],

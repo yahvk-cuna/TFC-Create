@@ -12,6 +12,14 @@ public class CommonConfig {
     public static ForgeConfigSpec.BooleanValue alloyingByMixer;
     public static ForgeConfigSpec.BooleanValue alloyingRequireHot;
 
+    public static ForgeConfigSpec.BooleanValue fanHeatItem;
+    public static ForgeConfigSpec.IntValue blastingTemperature;
+    public static ForgeConfigSpec.DoubleValue blastingMultiplier;
+    public static ForgeConfigSpec.IntValue smokingTemperature;
+    public static ForgeConfigSpec.DoubleValue smokingMultiplier;
+    public static ForgeConfigSpec.BooleanValue preventingMelting;
+    public static ForgeConfigSpec.BooleanValue heatingHighPriority;
+
     public static ForgeConfigSpec.IntValue temperatureToHeated;
     public static ForgeConfigSpec.IntValue temperatureToSuperHeated;
     public static ForgeConfigSpec.IntValue smoulderingTemperature;
@@ -55,6 +63,37 @@ public class CommonConfig {
                 .comment("Whether to require the basin to be hot for alloying.")
                 .define("alloyingRequireHot", true);
 
+        builder.pop().push("fan");
+
+        fanHeatItem = builder
+                .comment("Whether the fan can heat items.")
+                .define("fanHeatItem", true);
+
+        blastingTemperature = builder
+                .comment("The maximal temperature the Bulk Blasting can reach.")
+                .defineInRange("blastingTemperature", 1600, 0, Integer.MAX_VALUE);
+
+        blastingMultiplier = builder
+                .comment("The multiplier for the fan heat. A crucible at 1600 C is 6.0.")
+                .defineInRange("blastingMultiplier", 6.0, 1.0, Double.MAX_VALUE);
+
+        smokingTemperature = builder
+                .comment("The maximal temperature the Bulk Smoking can reach.")
+                .defineInRange("smokingTemperature", 200, 0, Integer.MAX_VALUE);
+
+        smokingMultiplier = builder
+                .comment("The multiplier for the fan heat. A firepit is 3.0.")
+                .defineInRange("smokingMultiplier", 3.0, 1.0, Double.MAX_VALUE);
+
+        preventingMelting = builder
+                .comment("Whether to prevent items from melting in the fan heat.")
+                .define("preventingMelting", false);
+
+        heatingHighPriority = builder
+                .comment("If heating recipe and fan process are both available, " +
+                        "whether to prioritize heating recipe over fan process. If false, fan process will be prioritized.")
+                .define("heatingHighPriority", false);
+
         builder.pop().push("blazeBurner");
 
         temperatureToHeated = builder
@@ -84,5 +123,7 @@ public class CommonConfig {
         temperatureOnly = builder
                 .comment("Whether to only use temperature for the basin recipe. If false, it will also check the blaze burner heat level.")
                 .define("temperatureOnly", false);
+
+        builder.pop();
     }
 }
