@@ -6,7 +6,6 @@ import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import com.simibubi.create.content.kinetics.fan.processing.AllFanProcessingTypes;
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessing;
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessingType;
-import moe.yahvk.tfc_create.TFCCreate;
 import moe.yahvk.tfc_create.config.CommonConfig;
 import moe.yahvk.tfc_create.controller.TransportedItemStackController;
 import moe.yahvk.tfc_create.create.FanHeating;
@@ -49,6 +48,7 @@ public class FanProcessingMixin {
         nbt.getCompound("CreateData").put("Processing", createDataOrigin.getCompound("Processing"));
     }
 
+    // This only handle heating recipe, temperature handled by {@link AirCurrentMixin}
     @Inject(method = "applyProcessing(Lnet/minecraft/world/entity/item/ItemEntity;Lcom/simibubi/create/content/kinetics/fan/processing/FanProcessingType;)Z",
             at = @At("HEAD"), cancellable = true)
     private static void onApplyProcessing(ItemEntity entity, FanProcessingType type, CallbackInfoReturnable<Boolean> cir) {
@@ -56,19 +56,14 @@ public class FanProcessingMixin {
             return;
         }
 
+        if (type != AllFanProcessingTypes.BLASTING && type != AllFanProcessingTypes.SMOKING) {
+            return;
+        }
+
         var heat = HeatCapability.get(entity.getItem());
         if (heat == null) {
             return; // ignore if the item does not have heat capability
         }
-
-        if (type == AllFanProcessingTypes.BLASTING) {
-            HeatCapability.addTemp(heat, CommonConfig.blastingTemperature.get(), CommonConfig.blastingMultiplier.get().floatValue());
-        } else if (type == AllFanProcessingTypes.SMOKING) {
-            HeatCapability.addTemp(heat, CommonConfig.smokingTemperature.get(), CommonConfig.smokingMultiplier.get().floatValue());
-        } else {
-            return;
-        }
-        TFCCreate.LOGGER.info("{} heat to {}", entity, heat.getTemperature());
 
         CompoundTag nbt = entity.getPersistentData();
 
@@ -128,10 +123,15 @@ public class FanProcessingMixin {
         cir.setReturnValue(true);
     }
 
+    // This only handle heating recipe, temperature handled by {@link AirCurrentMixin}
     @Inject(method = "applyProcessing(Lcom/simibubi/create/content/kinetics/belt/transport/TransportedItemStack;Lnet/minecraft/world/level/Level;Lcom/simibubi/create/content/kinetics/fan/processing/FanProcessingType;)Lcom/simibubi/create/content/kinetics/belt/behaviour/TransportedItemStackHandlerBehaviour$TransportedResult;",
             at = @At("HEAD"), cancellable = true)
     private static void onApplyProcessingTransported(TransportedItemStack transported, Level world, FanProcessingType type, CallbackInfoReturnable<TransportedItemStackHandlerBehaviour.TransportedResult> cir) {
         if (!CommonConfig.fanHeatItem.get()) {
+            return;
+        }
+
+        if (type != AllFanProcessingTypes.BLASTING && type != AllFanProcessingTypes.SMOKING) {
             return;
         }
 
@@ -141,14 +141,6 @@ public class FanProcessingMixin {
         }
 
         var controller = (TransportedItemStackController) transported;
-
-        if (type == AllFanProcessingTypes.BLASTING) {
-            HeatCapability.addTemp(heat, CommonConfig.blastingTemperature.get(), CommonConfig.blastingMultiplier.get().floatValue());
-        } else if (type == AllFanProcessingTypes.SMOKING) {
-            HeatCapability.addTemp(heat, CommonConfig.smokingTemperature.get(), CommonConfig.smokingMultiplier.get().floatValue());
-        } else {
-            return;
-        }
 
         if (!controller.tfc_create$initialized()) {
             if (CommonConfig.heatingHighPriority.get() && (

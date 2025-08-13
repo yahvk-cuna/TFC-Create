@@ -6,10 +6,14 @@ import com.simibubi.create.content.kinetics.fan.processing.AllFanProcessingTypes
 import com.simibubi.create.content.kinetics.fan.processing.FanProcessingType;
 import com.simibubi.create.foundation.item.ItemHelper;
 import moe.yahvk.tfc_create.config.CommonConfig;
+import net.dries007.tfc.client.TFCSounds;
 import net.dries007.tfc.common.capabilities.food.FoodCapability;
 import net.dries007.tfc.common.capabilities.food.FoodTraits;
+import net.dries007.tfc.common.capabilities.heat.HeatCapability;
 import net.dries007.tfc.common.recipes.HeatingRecipe;
 import net.dries007.tfc.common.recipes.inventory.ItemStackInventory;
+import net.dries007.tfc.util.Helpers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -96,5 +100,29 @@ public class FanHeating {
             FoodCapability.applyTrait(out, FoodTraits.BURNT_TO_A_CRISP);
         }
         return ItemHelper.multipliedOutput(input, out);
+    }
+
+    public static void heat(ItemStack stack, FanProcessingType type, Level world, BlockPos pos) {
+        if (!CommonConfig.fanHeatItem.get()) {
+            return;
+        }
+
+        var heat = HeatCapability.get(stack);
+        if (heat == null) {
+            return;
+        }
+
+        if (type == AllFanProcessingTypes.BLASTING) {
+            HeatCapability.addTemp(heat, CommonConfig.blastingTemperature.get(), CommonConfig.blastingMultiplier.get().floatValue());
+        } else if (type == AllFanProcessingTypes.SMOKING) {
+            HeatCapability.addTemp(heat, CommonConfig.smokingTemperature.get(), CommonConfig.smokingMultiplier.get().floatValue());
+        } else if (type == AllFanProcessingTypes.SPLASHING) {
+            if (heat.getTemperature() > 0 && CommonConfig.splashingCoolAmount.get() > 0) {
+                if (!world.isClientSide()) {
+                    Helpers.playSound(world, pos, TFCSounds.ITEM_COOL.get());
+                }
+                heat.setTemperature(Math.max(0f, heat.getTemperature() - CommonConfig.splashingCoolAmount.get().floatValue()));
+            }
+        }
     }
 }

@@ -13,6 +13,7 @@ public class CommonConfig {
     public static ForgeConfigSpec.BooleanValue alloyingRequireHot;
 
     public static ForgeConfigSpec.BooleanValue fanHeatItem;
+    public static ForgeConfigSpec.DoubleValue splashingCoolAmount;
     public static ForgeConfigSpec.IntValue blastingTemperature;
     public static ForgeConfigSpec.DoubleValue blastingMultiplier;
     public static ForgeConfigSpec.IntValue smokingTemperature;
@@ -68,6 +69,10 @@ public class CommonConfig {
         fanHeatItem = builder
                 .comment("Whether the fan can heat items.")
                 .define("fanHeatItem", true);
+
+        splashingCoolAmount = builder
+                .comment("The amount of temperature to cool items when splashing. Water is 50, ice is 100.")
+                .defineInRange("splashingCoolAmount", 30, 0, Double.MAX_VALUE);
 
         blastingTemperature = builder
                 .comment("The maximal temperature the Bulk Blasting can reach.")
