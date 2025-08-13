@@ -18,8 +18,7 @@ public class CommonConfig {
     public static ForgeConfigSpec.DoubleValue blastingMultiplier;
     public static ForgeConfigSpec.IntValue smokingTemperature;
     public static ForgeConfigSpec.DoubleValue smokingMultiplier;
-    public static ForgeConfigSpec.BooleanValue preventingMelting;
-    public static ForgeConfigSpec.BooleanValue heatingHighPriority;
+    public static ForgeConfigSpec.BooleanValue fanProcessHighPriority;
 
     public static ForgeConfigSpec.IntValue temperatureToHeated;
     public static ForgeConfigSpec.IntValue temperatureToSuperHeated;
@@ -71,7 +70,7 @@ public class CommonConfig {
                 .define("fanHeatItem", true);
 
         splashingCoolAmount = builder
-                .comment("The amount of temperature to cool items when splashing. Water is 50, ice is 100.")
+                .comment("The amount of temperature to cool items when splashing. Immersing in water is 50, ice is 100.")
                 .defineInRange("splashingCoolAmount", 30, 0, Double.MAX_VALUE);
 
         blastingTemperature = builder
@@ -90,14 +89,10 @@ public class CommonConfig {
                 .comment("The multiplier for the fan heat. A firepit is 3.0.")
                 .defineInRange("smokingMultiplier", 3.0, 1.0, Double.MAX_VALUE);
 
-        preventingMelting = builder
-                .comment("Whether to prevent items from melting in the fan heat.")
-                .define("preventingMelting", false);
-
-        heatingHighPriority = builder
-                .comment("If heating recipe and fan process are both available, " +
-                        "whether to prioritize heating recipe over fan process. If false, fan process will be prioritized.")
-                .define("heatingHighPriority", false);
+        fanProcessHighPriority = builder
+                .comment("If heating recipe and fan processing recipe are both available, " +
+                        "whether to prioritize fan processing over heating recipe. If true, heating recipe will not work when fan processing recipe available.")
+                .define("fanProcessHighPriority", true);
 
         builder.pop().push("blazeBurner");
 

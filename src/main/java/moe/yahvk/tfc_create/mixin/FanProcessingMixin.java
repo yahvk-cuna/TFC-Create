@@ -74,7 +74,7 @@ public class FanProcessingMixin {
         if (!createData.contains("RecipeTemperature") ||
                 heat.getTemperature() < createData.getFloat("RecipeTemperature") // check cache
         ) {
-            if (CommonConfig.heatingHighPriority.get() && (
+            if (CommonConfig.fanProcessHighPriority.get() && (
                     (type == AllFanProcessingTypes.BLASTING && FanHeating.hasBlastingRecipe(entity.getItem(), entity.level())) ||
                             (type == AllFanProcessingTypes.SMOKING && FanHeating.hasSmokingRecipe(entity.getItem(), entity.level()))
             )) {
@@ -143,7 +143,7 @@ public class FanProcessingMixin {
         var controller = (TransportedItemStackController) transported;
 
         if (!controller.tfc_create$initialized()) {
-            if (CommonConfig.heatingHighPriority.get() && (
+            if (CommonConfig.fanProcessHighPriority.get() && (
                     (type == AllFanProcessingTypes.BLASTING && FanHeating.hasBlastingRecipe(transported.stack, world)) ||
                             (type == AllFanProcessingTypes.SMOKING && FanHeating.hasSmokingRecipe(transported.stack, world))
             )) {
