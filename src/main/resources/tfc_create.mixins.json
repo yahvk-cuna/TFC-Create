@@ -6,6 +6,7 @@
   "refmap": "tfc_create.refmap.json",
   "mixins": [
     "AirCurrentMixin",
+    "BarrelBlockMixin",
     "BasinBlockEntityMixin",
     "BasinRecipeMixin",
     "BlastingTypeMixin",

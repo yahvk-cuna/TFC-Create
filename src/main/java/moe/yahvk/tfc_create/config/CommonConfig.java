@@ -28,6 +28,8 @@ public class CommonConfig {
     public static ForgeConfigSpec.IntValue seethingTemperature;
     public static ForgeConfigSpec.BooleanValue temperatureOnly;
 
+    public static ForgeConfigSpec.BooleanValue barrelComparator;
+
     CommonConfig(final ForgeConfigSpec.Builder builder) {
         builder.push("basin");
 
@@ -123,6 +125,12 @@ public class CommonConfig {
         temperatureOnly = builder
                 .comment("Whether to only use temperature for the basin recipe. If false, it will also check the blaze burner heat level.")
                 .define("temperatureOnly", false);
+
+        builder.pop().push("barrel");
+
+        barrelComparator = builder
+                .comment("Whether the barrel should output a redstone signal based on whether it is processing, like the Runic Altar of Botania.")
+                .define("barrelComparator", true);
 
         builder.pop();
     }
